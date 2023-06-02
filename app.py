@@ -1,12 +1,18 @@
 from youtube_info import YoutubeInfo
 from resume import Resume   
+from db import DB
 
 from config_real import *
 
 def main():
+    db = DB(video_id)
     YTI = YoutubeInfo(video_id)
+    if not db.check_video():
+        db.create_video()
+        info = YTI.get_video_info()
+        db.save_info(info)
+    
     Res = Resume(api_key, system_prompt, tokens)
-    print(YTI.get_video_info())
     subs = YTI.get_subs()
     
     # clean subtitles
@@ -23,9 +29,7 @@ def main():
         chunks = Res.split_into_chunks(text)
         chunks_len = len(chunks)
 
-        with open(f"{chunks_len}-{tokens}.txt", "wb") as f:
-            f.write(text.encode("UTF-8"))
-
+        db.save_content(f"{chunks_len}-{tokens}.txt", text)
         
     print(f"chunks: {chunks_len} of {target_chunks}")
 
