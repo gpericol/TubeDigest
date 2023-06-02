@@ -8,7 +8,6 @@ class YoutubeInfo:
         self.video_id = self._extract_video_id(video_id)
         self.url = f"https://www.youtube.com/watch?v={self.video_id}"
 
-
     def _extract_video_id(self, url):
         video_id = None
         
@@ -26,16 +25,22 @@ class YoutubeInfo:
         
         return video_id
 
+    def _get_best_subtitles(self):
+        transcript_list = YouTubeTranscriptApi.list_transcripts(self.video_id)
+
+        for transcript in transcript_list:
+            return transcript.language_code
+            
+        raise Exception("No srt available")
+
     def get_subs(self):
-        srt = YouTubeTranscriptApi.get_transcript(self.video_id)
+        srt = YouTubeTranscriptApi.get_transcript(self.video_id, [self._get_best_subtitles()])
 
         if srt == None:
             raise Exception("No srt available")
 
         # clean text
-        text = ""
-        for line in srt:
-            text += line['text'] + "\n"
+        text = "\n".join(line["text"].strip() for line in srt)
 
         return text
 

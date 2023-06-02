@@ -29,3 +29,7 @@ class DB:
     def delete_video(self):
         folder_path = os.path.join(self.path, self.video_id)
         shutil.rmtree(folder_path)
+
+    def get_path(self):
+        folder_path = os.path.join(self.path, self.video_id)
+        return os.path.abspath(folder_path)

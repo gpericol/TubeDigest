@@ -42,7 +42,7 @@ class Resume:
                 )
                 end_time = time.time()
                 found = True
-                print(f"{int(end_time - start_time)}")
+                print(f"OpenAI's response time:{int(end_time - start_time)}s")
             except Exception as e:
                 print(e)
 
